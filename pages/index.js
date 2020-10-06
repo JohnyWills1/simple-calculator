@@ -1,65 +1,56 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import styles from '../styles/Home.module.css';
+import { Flex, Heading, Box } from '@chakra-ui/core';
+import CalcBody from '../components/CalcBody';
+import CalcDisplay from '../components/CalcDisplay';
+import React, { useState } from 'react';
 
 export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+	const [result, setResult] = useState('');
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+	const calculate = () => {
+		try {
+			setResult(eval(result) || '') + '';
+		} catch (e) {
+			setResult('error');
+		}
+	};
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+	const reset = () => {
+		setResult('');
+	};
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+	const backspace = () => {
+		setResult(result.slice(0, -1));
+	};
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+	const onClick = (button) => {
+		if (button === '=') {
+			calculate();
+		} else if (button === 'C') {
+			reset();
+		} else if (button === 'CE') {
+			backspace();
+		} else {
+			setResult(result + button);
+		}
+	};
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+	return (
+		<>
+			<Head>
+				<link
+					rel='icon'
+					href='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>'
+				/>
+			</Head>
+			<Flex justify='center' align='center' flexDirection='column' height='100vh'>
+				<Heading>Simple Calculator</Heading>
+				<CalcDisplay result={result} />
+				<Box borderWidth='1px' p={5} rounded='lg' shadow='50px'>
+					<CalcBody onClick={onClick} />
+				</Box>
+			</Flex>
+		</>
+	);
 }
